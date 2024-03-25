@@ -65,7 +65,7 @@ const Payment = () => {
     };
 
     fetchPrice();
-  }, []);
+  }, [getPrice]); // Include getPrice in the dependency array
 
   const handleSubscribe = async (priceId) => {
     setLoading(true);
@@ -88,7 +88,7 @@ const Payment = () => {
     setLoading(true);
 
     try {
-      const response = await cancelSubscriptionMutation({
+      await cancelSubscriptionMutation({
         customerID,
       }).unwrap();
       setCancelSubscription(true);
