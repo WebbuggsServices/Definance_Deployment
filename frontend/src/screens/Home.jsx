@@ -4,16 +4,15 @@ import "../App.css";
 
 function Home() {
   const { unityProvider, loadingProgression, isLoaded } = useUnityContext({
-    loaderUrl: "assets/Build.loader.js",
-    dataUrl: "assets/Build.data",
-    frameworkUrl: "assets/Build.framework.js",
-    codeUrl: "assets/Build.wasm",
+    loaderUrl: "assets/Build/Definance_WebGL_Build.loader.js",
+    dataUrl: "assets/Build/Definance_WebGL_Build.data",
+    frameworkUrl: "assets/Build/Definance_WebGL_Build.framework.js",
+    codeUrl: "assets/Build/Definance_WebGL_Build.wasm",
   });
 
   return (
-    <>
-      <div className="App">
-        <div className="game-provider">
+    <>  
+      <div className="game-provider unity-container">
           {isLoaded === false && (
             <>
               <div className="loadingBar">
@@ -22,7 +21,7 @@ function Home() {
                   style={{ width: loadingProgression * 100 * 4 }}
                 />
               </div>
-              <p className="text1" style={{ color: "white" }}>
+              <p className="text" style={{ color: "white" }}>
                 Loading Application... {Math.round(loadingProgression * 100)}%
               </p>
             </>
@@ -33,7 +32,6 @@ function Home() {
             style={{ display: isLoaded ? "block" : "none" }}
           />
         </div>
-      </div>
     </>
   );
 }

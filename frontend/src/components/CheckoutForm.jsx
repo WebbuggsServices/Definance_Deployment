@@ -34,22 +34,20 @@ export default function CheckoutForm({ clientSecret }) {
           card: elements.getElement(CardElement),
         },
       });
-  
-      if (payload.error) {
-        setError(`Payment failed ${payload.error.message}`);
+      setProcessing(true);
+      if (payload?.paymentIntent?.status === "succeeded") {
+      setError(null);
+      const res = await updateSubscription({ isSubscriber: true, userId: userInfo._id });
+      const {data}=res;
+      setSucceeded(data?.isSubscriber);
       } else {
-        setError(null);
-        setProcessing(true);
-  
-        await updateSubscription({ isSubscriber: true, userId: userInfo._id });
-  
+        setError(`Payment failed ${payload.error.message}`);
       }
     } catch (error) {
       setError(`An error occurred: ${error.message}`);
       console.error(error);
     } finally {
       setProcessing(false);
-      setSucceeded(true);
     }
   };
 
@@ -63,12 +61,9 @@ export default function CheckoutForm({ clientSecret }) {
       {succeeded ? (
         <div>
           <Alert severity="success" className="mt-2 mb-0">
-            You're all set! Your subscription is active, granting you
-            uninterrupted access to our content.
+            Your subscription is active, granting you
+            uninterrupted access to our Game.
           </Alert>
-          <Link to="/">
-            <button className="btn btn-primary mt-3">Back to Home</button>
-          </Link>
         </div>
       ) : (
         <form id="payment-form" onSubmit={handleSubmit}>

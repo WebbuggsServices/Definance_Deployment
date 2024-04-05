@@ -10,6 +10,7 @@ import {
   useCancelSubscriptionMutation,
 } from "../slices/usersApiSlice";
 import Alert from "react-bootstrap/Alert";
+import { Link } from "react-router-dom";
 
 const Payment = () => {
   const [isSubscriber, setIsSubscriber] = useState(false);
@@ -65,7 +66,7 @@ const Payment = () => {
     };
 
     fetchPrice();
-  }, [getPrice]); // Include getPrice in the dependency array
+  }, [getPrice]);
 
   const handleSubscribe = async (priceId) => {
     setLoading(true);
@@ -86,11 +87,11 @@ const Payment = () => {
 
   const closeSubscription = async () => {
     setLoading(true);
-
     try {
-      await cancelSubscriptionMutation({
+     const  con = await cancelSubscriptionMutation({
         customerID,
       }).unwrap();
+      setIsSubscriber(con.isSubscriber);
       setCancelSubscription(true);
     } catch (error) {
       console.error("Close Subscription Error:", error);
@@ -104,40 +105,47 @@ const Payment = () => {
     <div className="container">
       {alertMessage && <p className="mt-4 h5">{alertMessage}</p>}
       {product?.nickname && (
-        <div className="card" style={{ width: "30rem", margin: "20px auto" }}>
-          <div className="card-body">
-            <h5 className="card-title">{product.nickname}</h5>
-            <p>$ {product.unit_amount / 100}</p>
-            {isSubscriber ? (
-              <button
-                disabled={cancelSubscription}
-                className="btn btn-danger d-flex gap-2"
-                onClick={closeSubscription}
-              >
-                <span>Cancel Subscription</span>
-                {loading && <Loader />}
-              </button>
-            ) : (
-              <>
-                {!clientSecret && (
-                  <button
-                    disabled={loading}
-                    className="btn btn-primary d-flex gap-2"
-                    onClick={() => handleSubscribe(product.id)}
-                  >
-                    <span>Subscribe Annually</span>
-                    {loading && <Loader />}
-                  </button>
-                )}
-                {clientSecret && <Checkout clientSecret={clientSecret} />}
-              </>
-            )}
-            {cancelSubscription && (
-              <Alert severity="success" className="mt-2 mb-0">
-                Subscription cancelled successfully!
-              </Alert>
-            )}
+        <div style={{ width: "30rem", margin: "20px auto", display:"flex",justifyContent:"center",flexDirection:"column" }}>
+          <div
+            className="card  text-white bg-dark"
+          >
+            <div className="card-body">
+              <h5 className="card-title">{product.nickname}</h5>
+              <p>$ {product.unit_amount / 100}</p>
+              {isSubscriber ? (
+                <button
+                  disabled={cancelSubscription}
+                  className="btn btn-danger d-flex gap-2"
+                  onClick={closeSubscription}
+                >
+                  <span>Cancel Subscription</span>
+                  {loading && <Loader />}
+                </button>
+              ) : (
+                <>
+                  {!clientSecret && (
+                    <button
+                      disabled={loading}
+                      className="btn btn-primary d-flex gap-2"
+                      onClick={() => handleSubscribe(product.id)}
+                    >
+                      <span>Subscribe Annually</span>
+                      {loading && <Loader />}
+                    </button>
+                  )}
+                  {clientSecret && <Checkout clientSecret={clientSecret} />}
+                </>
+              )}
+              {cancelSubscription && (
+                <Alert severity="success" className="mt-2 mb-0">
+                  Subscription cancelled successfully!
+                </Alert>
+              )}
+            </div>
           </div>
+          <Link to="/" style={{ margin: "20px auto" }}>
+            <button className="btn btn-success mt-3">Go to Game View</button>
+          </Link>
         </div>
       )}
     </div>

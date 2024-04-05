@@ -26,7 +26,7 @@ const RegisterScreen = () => {
 
   useEffect(() => {
     if (userInfo) {
-      navigate("/");
+      navigate("/subscription");
     }
   }, [navigate, userInfo]);
 
@@ -51,7 +51,6 @@ const RegisterScreen = () => {
         }).unwrap();
 
         dispatch(setCredentials({ ...res }));
-        navigate("/");
       } catch (err) {
         console.log("error", err);
         toast.error(err?.data?.message || err.error);
@@ -73,19 +72,19 @@ const RegisterScreen = () => {
       <h1>Register</h1>
       <Form noValidate validated={validated} onSubmit={submitFn}>
         <Form.Group controlId="username">
-          <Form.Label>Name</Form.Label>
+          <Form.Label>Username</Form.Label>
           <Form.Control
             type="text"
             name="name"
             value={form_Data.name}
-            minLength={3} // Setting minimum length requirement to 3 characters
+            minLength={3} 
             onChange={chngFn}
-            pattern="^[a-zA-Z\s]+$" // Allowing alphanumeric characters and spaces
+            pattern="^[a-zA-Z\s]+$"
             required
             isInvalid={
               validated &&
               (!/^[a-zA-Z\s]+$/.test(form_Data.name) ||
-                form_Data.name.length < 3) // Adding validation for minimum length
+                form_Data.name.length < 3) 
             }
           />
           <Form.Control.Feedback type="invalid">
@@ -116,7 +115,6 @@ const RegisterScreen = () => {
             name="pass"
             value={form_Data.pass}
             onChange={chngFn}
-            // pattern={form_Data.pass}
             required
             isInvalid={
               validated &&

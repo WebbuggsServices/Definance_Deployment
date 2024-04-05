@@ -24,11 +24,11 @@ import ResetPassword from "./screens/ResetPassword.jsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
+      <Route index={true} element={<Home />} />
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/register" element={<RegisterScreen />} />
       <Route path="/resetPassword" element={<ResetPassword />} />
       <Route path="" element={<PrivateRoute />}>
-        <Route index={true} path="/" element={<Home />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/info" element={<Info />} />
         <Route path="/subscription" element={<Payment />} />
