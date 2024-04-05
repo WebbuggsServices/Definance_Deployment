@@ -4,10 +4,10 @@ import "../App.css";
 
 function Home() {
   const { unityProvider, loadingProgression, isLoaded } = useUnityContext({
-    loaderUrl: "assets/Build/Definance_WebGL_Build.loader.js",
-    dataUrl: "assets/Build/Definance_WebGL_Build.data",
-    frameworkUrl: "assets/Build/Definance_WebGL_Build.framework.js",
-    codeUrl: "assets/Build/Definance_WebGL_Build.wasm",
+    loaderUrl: "/game-build/Definance_WebGL_Build.loader.js",
+    dataUrl: "/game-build/Definance_WebGL_Build.data",
+    frameworkUrl: "/game-build/Definance_WebGL_Build.framework.js",
+    codeUrl: "/game-build/Definance_WebGL_Build.wasm",
   });
 
   return (
