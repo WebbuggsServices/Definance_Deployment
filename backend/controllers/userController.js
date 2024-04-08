@@ -79,11 +79,21 @@ const Token = asyncHandler(async (req, res) => {
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
-const existingUser = await User.findOne({ email, name });
+
+  const existingUser = await User.findOne({ $or: [{ name }, { email }] });
   if (existingUser) {
-    res.status(400);
-    throw new Error("User already exists");
+    if (existingUser.name === name && existingUser.email === email) {
+      res.status(400);
+      throw new Error("User with this name and email already exists");
+    } else if (existingUser.name === name) {
+      res.status(400);
+      throw new Error("User with this name already exists");
+    } else {
+      res.status(400);
+      throw new Error("User with this email already exists");
+    }
   }
+
   let customerID = "";
   const customer = await stripe.customers.search({
     query: `email:'${email}'`,
@@ -98,6 +108,7 @@ const existingUser = await User.findOne({ email, name });
     customerID = customer.data[0].id;
   }
 
+  // Create the user
   const user = await User.create({
     name,
     email,
@@ -105,6 +116,7 @@ const existingUser = await User.findOne({ email, name });
     customerID,
   });
 
+  // Respond with the user data and token
   if (user) {
     generateToken(res, user._id);
 
@@ -118,6 +130,7 @@ const existingUser = await User.findOne({ email, name });
     throw new Error("Invalid user data");
   }
 });
+
 
 // @desc    Logout user / clear cookie
 // @route   POST /api/users/logout

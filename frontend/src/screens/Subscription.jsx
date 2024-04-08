@@ -105,7 +105,7 @@ const Payment = () => {
     <div className="container">
       {alertMessage && <p className="mt-4 h5">{alertMessage}</p>}
       {product?.nickname && (
-        <div style={{ width: "30rem", margin: "20px auto", display:"flex",justifyContent:"center",flexDirection:"column" }}>
+        <div style={{ width: "30rem", margin: "100px auto", display:"flex",justifyContent:"center",flexDirection:"column" }}>
           <div
             className="card  text-white bg-dark"
           >

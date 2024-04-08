@@ -9,31 +9,58 @@ function Home() {
     frameworkUrl: "/game-build/Definance_WebGL_Build.framework.js",
     codeUrl: "/game-build/Definance_WebGL_Build.wasm",
   });
-
+  function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  }
   return (
-    <>  
-      <div className="game-provider unity-container">
-          {isLoaded === false && (
-            <>
-              <div className="loadingBar">
-                <div
-                  className="loadingBarFill"
-                  style={{ width: loadingProgression * 100 * 4 }}
-                />
+    <div style={{ position: "relative" }}>
+      <div className="unity-container">
+        {isLoaded === false && (
+          <div className="loading">
+            <div className="loadingText">
+                {Math.round(loadingProgression * 100)}%
               </div>
-              <p className="text" style={{ color: "white" }}>
-                Loading Application... {Math.round(loadingProgression * 100)}%
-              </p>
-            </>
-          )}
-          <Unity
-            unityProvider={unityProvider}
-            className="unity-container"
-            style={{ display: isLoaded ? "block" : "none" }}
+            <div className="loadingBar">
+              <div
+                className="loadingBarFill"
+                style={{ width: `${loadingProgression * 100}%` }}
+              />
+            </div>
+          </div>
+        )}
+        <Unity
+          unityProvider={unityProvider}
+          className="game"
+          style={{
+            width: "100%",
+            height: "100%",
+            display: isLoaded ? "block" : "none",
+          }}
+        />
+      </div>
+      <div className="unity-footer">
+        <img src="/webgl-logo.png" alt="webgl-logo.png" />
+        <div>
+          <span>DeFinance-Passive-Empire</span>
+          <img
+            style={{ marginLeft: "10px", marginTop: "1px" }}
+            src="/fullscreen-button.png"
+            alt="Fullscreen"
+            id="unity-fullscreen-button"
+            onClick={toggleFullScreen}
           />
         </div>
-    </>
+      </div>
+    </div>
   );
 }
+
+// Function to toggle fullscreen
 
 export default Home;
