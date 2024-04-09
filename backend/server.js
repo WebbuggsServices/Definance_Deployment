@@ -21,14 +21,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/api/users", userRoutes);
-app.use("/payment", paymentRoutes);
-app.get("/config", (req, res) => {
+app.use("/api/payment", paymentRoutes);
+app.get("/api/config", (req, res) => {
   res.send({
     publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
   });
 });
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   res.send("API is running....");
 });
 
