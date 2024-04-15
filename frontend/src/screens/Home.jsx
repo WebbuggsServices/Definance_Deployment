@@ -10,14 +10,21 @@ function Home() {
     codeUrl: "/game-build/Definance_WebGL_Build.wasm",
   });
   function toggleFullScreen() {
+    var header = document.getElementsByClassName('header')[0];
+    var container=document.getElementsByClassName('root-container')[0];
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen();
+      header.classList.add('hidden');
+      container.classList.add('full-container');
     } else {
       if (document.exitFullscreen) {
         document.exitFullscreen();
-      }
+        header.classList.remove('hidden');
+        container.classList.remove('full-container');
+      } 
     }
   }
+
   return (
     <div style={{ position: "relative" }}>
       <div className="unity-container">
@@ -60,7 +67,5 @@ function Home() {
     </div>
   );
 }
-
-// Function to toggle fullscreen
 
 export default Home;
