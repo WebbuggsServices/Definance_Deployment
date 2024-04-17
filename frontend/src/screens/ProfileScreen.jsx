@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../components/FormContainer";
@@ -11,17 +11,19 @@ const ProfileScreen = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [validated, setValidated] = useState(false);
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.auth);
 
   const [updateProfile, { isLoading }] = useUpdateUserMutation();
 
-  useEffect(() => {
-    setName(userInfo.name);
-  }, [userInfo.name]);
-
   const submitHandler = async (e) => {
     e.preventDefault();
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      setValidated(true);
+      return;
+    }
     if (password !== confirmPassword) {
       toast.error("Passwords do not match");
     } else {
@@ -38,11 +40,12 @@ const ProfileScreen = () => {
       }
     }
   };
+
   return (
     <FormContainer>
       <h1>Update Profile</h1>
 
-      <Form onSubmit={submitHandler}>
+      <Form noValidate validated={validated} onSubmit={submitHandler}>
         <Form.Group className="my-2" controlId="name">
           <Form.Label>Name</Form.Label>
           <Form.Control
@@ -50,7 +53,11 @@ const ProfileScreen = () => {
             placeholder="Enter name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            required
           ></Form.Control>
+          <Form.Control.Feedback type="invalid">
+            Please enter a valid name.
+          </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="my-2" controlId="password">
           <Form.Label>Password</Form.Label>
@@ -59,7 +66,12 @@ const ProfileScreen = () => {
             placeholder="Enter password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
+            pattern="^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$"
           ></Form.Control>
+          <Form.Control.Feedback type="invalid">
+            Password must be at least 8 characters long and include one special character.
+          </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="my-2" controlId="confirmPassword">
           <Form.Label>Confirm Password</Form.Label>
@@ -68,7 +80,12 @@ const ProfileScreen = () => {
             placeholder="Confirm password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            pattern={password}
           ></Form.Control>
+          <Form.Control.Feedback type="invalid">
+            Passwords do not match.
+          </Form.Control.Feedback>
         </Form.Group>
         <Button type="submit" variant="primary" className="mt-3">
           Update

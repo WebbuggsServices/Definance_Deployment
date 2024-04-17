@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import Alert from "react-bootstrap/Alert";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { useUpdateSubscriptionMutation } from "../slices/usersApiSlice";
 
 export default function CheckoutForm({ clientSecret }) {

@@ -77,59 +77,59 @@ const Token = asyncHandler(async (req, res) => {
 // @desc    Register a new user
 // @route   POST /api/users/register
 // @access  Public
-const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const registerUser = asyncHandler(async (req, res) => {
+    const { name, email, password } = req.body;
 
-  const existingUser = await User.findOne({ $or: [{ name }, { email }] });
-  if (existingUser) {
-    if (existingUser.name === name && existingUser.email === email) {
-      res.status(400);
-      throw new Error("User with this name and email already exists");
-    } else if (existingUser.name === name) {
-      res.status(400);
-      throw new Error("User with this name already exists");
+    const existingUser = await User.findOne({ $or: [{ name }, { email }] });
+    if (existingUser) {
+      if (existingUser.name === name && existingUser.email === email) {
+        res.status(400);
+        throw new Error("User with this name and email already exists");
+      } else if (existingUser.name === name) {
+        res.status(400);
+        throw new Error("User with this name already exists");
+      } else {
+        res.status(400);
+        throw new Error("User with this email already exists");
+      }
+    }
+
+    let customerID = "";
+    const customer = await stripe.customers.search({
+      query: `email:'${email}'`,
+    });
+    if (customer.data.length === 0) {
+      const customerData = await stripe.customers.create({
+        email,
+        name,
+      });
+      customerID = customerData.id;
+    } else {
+      customerID = customer.data[0].id;
+    }
+
+    // Create the user
+    const user = await User.create({
+      name,
+      email,
+      password,
+      customerID,
+    });
+
+    // Respond with the user data and token
+    if (user) {
+      generateToken(res, user._id);
+
+      res.status(201).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      });
     } else {
       res.status(400);
-      throw new Error("User with this email already exists");
+      throw new Error("Invalid user data");
     }
-  }
-
-  let customerID = "";
-  const customer = await stripe.customers.search({
-    query: `email:'${email}'`,
   });
-  if (customer.data.length === 0) {
-    const customerData = await stripe.customers.create({
-      email,
-      name,
-    });
-    customerID = customerData.id;
-  } else {
-    customerID = customer.data[0].id;
-  }
-
-  // Create the user
-  const user = await User.create({
-    name,
-    email,
-    password,
-    customerID,
-  });
-
-  // Respond with the user data and token
-  if (user) {
-    generateToken(res, user._id);
-
-    res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-    });
-  } else {
-    res.status(400);
-    throw new Error("Invalid user data");
-  }
-});
 
 
 // @desc    Logout user / clear cookie
@@ -166,13 +166,21 @@ const getUserProfile = asyncHandler(async (req, res) => {
 // @route   PATCH /api/users/profile
 // @access  Private
 const updateUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.body.userId);
+  const { userId, name, password } = req.body;
+  const user = await User.findById(userId);
 
   if (user) {
-    user.name = req.body.name || user.name;
+    if (name && name !== user.name) {
+      const existingUser = await User.findOne({ name });
+      if (existingUser) {
+        res.status(400);
+        throw new Error("User with this name already exists");
+      }
+      user.name = name;
+    }
 
-    if (req.body.password) {
-      user.password = req.body.password;
+    if (password) {
+      user.password = password;
     }
 
     const updatedUser = await user.save();
@@ -186,6 +194,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 });
+
 
 // @desc    forget password
 // @route   POST /api/users/forget-password
