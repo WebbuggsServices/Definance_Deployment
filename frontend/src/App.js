@@ -9,7 +9,7 @@ const App = () => {
   return (
     <>
       <ToastContainer />
-      <div class="root-container">
+      <div className="root-container">
         <Header />
         <Outlet />
         {/* <footer className='footer'> Copyright ©{currentYear()}. All rights reserved.</footer> */}

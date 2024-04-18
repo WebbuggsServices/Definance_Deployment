@@ -8,7 +8,6 @@ import { useUpdateUserMutation } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 
 const ProfileScreen = () => {
-  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [validated, setValidated] = useState(false);
@@ -30,13 +29,15 @@ const ProfileScreen = () => {
       try {
         const res = await updateProfile({
           userId: userInfo._id,
-          name,
           password,
         }).unwrap();
         dispatch(setCredentials(res));
         toast.success("Profile updated successfully");
       } catch (err) {
         toast.error(err?.data?.message || err.error);
+      } finally {
+        setPassword("");
+        setConfirmPassword("");
       }
     }
   };
@@ -44,21 +45,7 @@ const ProfileScreen = () => {
   return (
     <FormContainer>
       <h1>Update Profile</h1>
-
       <Form noValidate validated={validated} onSubmit={submitHandler}>
-        <Form.Group className="my-2" controlId="name">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            type="name"
-            placeholder="Enter name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          ></Form.Control>
-          <Form.Control.Feedback type="invalid">
-            Please enter a valid name.
-          </Form.Control.Feedback>
-        </Form.Group>
         <Form.Group className="my-2" controlId="password">
           <Form.Label>Password</Form.Label>
           <Form.Control
@@ -67,10 +54,10 @@ const ProfileScreen = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            pattern="^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$"
-          ></Form.Control>
+            isInvalid={validated && password.length < 3}
+          />
           <Form.Control.Feedback type="invalid">
-            Password must be at least 8 characters long and include one special character.
+            Password must be at least 3 characters long.
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="my-2" controlId="confirmPassword">
@@ -82,7 +69,7 @@ const ProfileScreen = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
             pattern={password}
-          ></Form.Control>
+          />
           <Form.Control.Feedback type="invalid">
             Passwords do not match.
           </Form.Control.Feedback>

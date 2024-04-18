@@ -63,13 +63,16 @@ const LoginScreen = () => {
       <h1>Sign In</h1>
       <Form noValidate validated={validated} onSubmit={submitHandler}>
         <Form.Group className="my-2" controlId="email">
-          <Form.Label>Email Address</Form.Label>
+          <Form.Label>Email Address {email}</Form.Label>
           <Form.Control
             autoComplete="off"
             type="email"
             placeholder="Enter email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              console.log(e.target.value);
+              setEmail(e.target.value);
+            }}
             required
             isInvalid={validated && !email}
           />

@@ -13,32 +13,45 @@ function Home() {
 
   const unityContainerRef = useRef(null);
   const unityFooterRef = useRef(null);
-  useEffect(() => {
-    const unityContainer = unityContainerRef.current;
-    const unityFooter = unityFooterRef.current;
-    const header = document.querySelector(".header");
-    const container = document.querySelector(".root-container");
 
+  useEffect(() => {
     const toggleFullScreen = () => {
       if (!document.fullscreenElement) {
         setZoombtn(false);
         document.documentElement.requestFullscreen();
-        header.classList.add("hidden");
-        container.classList.add("full-container");
-        unityContainer.classList.add("unity-container-full");
+        document.querySelector(".header").classList.add("hidden");
+        document
+          .querySelector(".root-container")
+          .classList.add("full-container");
+        unityContainerRef.current.classList.add("unity-container-full");
       } else {
         if (document.exitFullscreen) {
           setZoombtn(true);
           document.exitFullscreen();
-          header.classList.remove("hidden");
-          container.classList.remove("full-container");
-          unityContainer.classList.remove("unity-container-full");
+          document.querySelector(".header").classList.remove("hidden");
+          document
+            .querySelector(".root-container")
+            .classList.remove("full-container");
+          unityContainerRef.current.classList.remove("unity-container-full");
         }
       }
     };
-    unityFooter.addEventListener("click", toggleFullScreen);
+
+    const requestAnimationFrameCallback = () => {
+      const unityFooter = unityFooterRef.current;
+      if (unityFooter) {
+        unityFooter.addEventListener("click", toggleFullScreen);
+      } else {
+        requestAnimationFrame(requestAnimationFrameCallback);
+      }
+    };
+
+    requestAnimationFrame(requestAnimationFrameCallback);
+    const currentUnityFooterRef = unityFooterRef.current;
     return () => {
-      unityFooter.removeEventListener("click", toggleFullScreen);
+      if (currentUnityFooterRef) {
+        currentUnityFooterRef.removeEventListener("click", toggleFullScreen);
+      }
     };
   }, []);
 
@@ -68,7 +81,7 @@ function Home() {
       </div>
       <div className="unity-footer" ref={unityFooterRef}>
         <img
-          style={{ height:"30px",width:"30px" }}
+          style={{ height: "30px", width: "30px" }}
           src={zoombtn ? "/fullscreen-button.png" : "/exitScreen-button.png"}
           alt="Fullscreen"
         />

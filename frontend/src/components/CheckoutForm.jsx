@@ -3,15 +3,18 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import Alert from "react-bootstrap/Alert";
 import { useSelector } from "react-redux";
 import { useUpdateSubscriptionMutation } from "../slices/usersApiSlice";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function CheckoutForm({ clientSecret }) {
   const [succeeded, setSucceeded] = useState(false);
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState("");
   const [disabled, setDisabled] = useState(true);
+  const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
-  const [updateSubscription]=useUpdateSubscriptionMutation();
+  const [updateSubscription] = useUpdateSubscriptionMutation();
   const { userInfo } = useSelector((state) => state.auth);
   const handleChange = async (event) => {
     setDisabled(event.empty);
@@ -20,13 +23,11 @@ export default function CheckoutForm({ clientSecret }) {
 
   const handleSubmit = async (ev) => {
     ev.preventDefault();
-  
+
     if (!stripe || !elements) {
       return;
     }
-  
     setProcessing(true);
-  
     try {
       const payload = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
@@ -35,10 +36,17 @@ export default function CheckoutForm({ clientSecret }) {
       });
       setProcessing(true);
       if (payload?.paymentIntent?.status === "succeeded") {
-      setError(null);
-      const res = await updateSubscription({ isSubscriber: true, userId: userInfo._id });
-      const {data}=res;
-      setSucceeded(data?.isSubscriber);
+        setError(null);
+        const res = await updateSubscription({
+          isSubscriber: true,
+          userId: userInfo._id,
+        });
+        const { data } = res;
+        setSucceeded(data?.isSubscriber);
+        toast.success(
+          "Your subscription is active, granting you uninterrupted access to our Game."
+        );
+        navigate("/");
       } else {
         setError(`Payment failed ${payload.error.message}`);
       }
@@ -60,8 +68,8 @@ export default function CheckoutForm({ clientSecret }) {
       {succeeded ? (
         <div>
           <Alert severity="success" className="mt-2 mb-0">
-            Your subscription is active, granting you
-            uninterrupted access to our Game.
+            Your subscription is active, granting you uninterrupted access to
+            our Game.
           </Alert>
         </div>
       ) : (

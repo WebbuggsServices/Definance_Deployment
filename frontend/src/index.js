@@ -14,12 +14,10 @@ import LoginScreen from "./screens/LoginScreen.jsx";
 import RegisterScreen from "./screens/RegisterScreen.jsx";
 import ProfileScreen from "./screens/ProfileScreen.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
-import Info from "./screens/Info.jsx";
 import Home from "./screens/Home.jsx";
 import Payment from "./screens/Subscription.jsx";
 import Checkout from "./screens/Checkout.jsx";
 import Notfound from "./NotFound.js";
-import ResetPassword from "./screens/ResetPassword.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,10 +25,8 @@ const router = createBrowserRouter(
       <Route index={true} element={<Home />} />
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/register" element={<RegisterScreen />} />
-      <Route path="/resetPassword" element={<ResetPassword />} />
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<ProfileScreen />} />
-        <Route path="/info" element={<Info />} />
         <Route path="/subscription" element={<Payment />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="*" element={<Notfound />} />

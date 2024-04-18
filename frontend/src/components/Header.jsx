@@ -1,5 +1,4 @@
 import { Navbar, Nav, Container } from "react-bootstrap";
-import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { LinkContainer } from "react-router-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -20,11 +19,25 @@ const Header = () => {
       await logoutApiCall().unwrap();
       dispatch(logout());
       navigate("/login");
+      window.location.reload(); // Reload the page after logout
     } catch (err) {
       console.error(err);
     }
   };
 
+  const loginHandler = () => {
+    navigate("/login");
+    window.location.reload();
+  };
+
+  const signupHandler = () => {
+    navigate("/register");
+    window.location.reload();
+  };
+  const profileHandler = () => {
+    navigate("/profile");
+    window.location.reload();
+  };
   return (
     <header className="header">
       <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
@@ -51,27 +64,36 @@ const Header = () => {
                   >
                     {userInfo.name}
                   </Navbar.Text>
-
-                  <LinkContainer to="/profile">
-                    <Nav.Link>Profile</Nav.Link>
-                  </LinkContainer>
+                  <Navbar.Text
+                    style={{ cursor: "pointer" }}
+                    onClick={profileHandler}
+                  >
+                    Profile
+                  </Navbar.Text>
                   <LinkContainer to="/subscription">
                     <Nav.Link>Subscriptions</Nav.Link>
                   </LinkContainer>
-                  <Navbar.Text style={{ cursor: "pointer" }} onClick={logoutHandler}>Logout</Navbar.Text>
+                  <Navbar.Text
+                    style={{ cursor: "pointer" }}
+                    onClick={logoutHandler}
+                  >
+                    Logout
+                  </Navbar.Text>
                 </>
               ) : (
                 <>
-                  <LinkContainer to="/login">
-                    <Nav.Link>
-                      <FaSignInAlt /> Sign In
-                    </Nav.Link>
-                  </LinkContainer>
-                  <LinkContainer to="/register">
-                    <Nav.Link>
-                      <FaSignOutAlt /> Sign Up
-                    </Nav.Link>
-                  </LinkContainer>
+                  <Navbar.Text
+                    style={{ cursor: "pointer" }}
+                    onClick={loginHandler}
+                  >
+                    Sign In
+                  </Navbar.Text>
+                  <Navbar.Text
+                    style={{ cursor: "pointer", marginLeft: "20px" }}
+                    onClick={signupHandler}
+                  >
+                    Sign Up
+                  </Navbar.Text>
                 </>
               )}
             </Nav>

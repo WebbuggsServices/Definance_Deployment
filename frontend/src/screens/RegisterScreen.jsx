@@ -32,16 +32,13 @@ const RegisterScreen = () => {
 
   const submitFn = async (event) => {
     event.preventDefault();
-
     const form = event.currentTarget;
 
     if (
       form.checkValidity() === true &&
       form_Data.name !== "" &&
       form_Data.email !== "" &&
-      /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/.test(
-        form_Data.pass
-      )
+      form_Data.pass.length >= 3
     ) {
       try {
         const res = await register({
@@ -77,15 +74,10 @@ const RegisterScreen = () => {
             type="text"
             name="name"
             value={form_Data.name}
-            minLength={3} 
+            minLength={3}
             onChange={chngFn}
             pattern="^[a-zA-Z\s]+$"
             required
-            isInvalid={
-              validated &&
-              (!/^[a-zA-Z\s]+$/.test(form_Data.name) ||
-                form_Data.name.length < 3) 
-            }
           />
           <Form.Control.Feedback type="invalid">
             Please enter a valid username (alphanumeric characters and spaces
@@ -116,16 +108,10 @@ const RegisterScreen = () => {
             value={form_Data.pass}
             onChange={chngFn}
             required
-            isInvalid={
-              validated &&
-              !/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/.test(
-                form_Data.pass
-              )
-            }
+            isInvalid={validated && form_Data.pass.length < 3}
           />
           <Form.Control.Feedback type="invalid">
-            Password must be at least 8 characters long. and must be include one
-            special character
+            Password must be at least 3 characters long.
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group controlId="confirmPassword">
