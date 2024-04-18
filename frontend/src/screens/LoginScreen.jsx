@@ -63,7 +63,7 @@ const LoginScreen = () => {
       <h1>Sign In</h1>
       <Form noValidate validated={validated} onSubmit={submitHandler}>
         <Form.Group className="my-2" controlId="email">
-          <Form.Label>Email Address {email}</Form.Label>
+          <Form.Label>Email Address</Form.Label>
           <Form.Control
             autoComplete="off"
             type="email"
