@@ -83,7 +83,7 @@ const Header = () => {
               ) : (
                 <>
                   <Navbar.Text
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", marginLeft: "20px"  }}
                     onClick={loginHandler}
                   >
                     Sign In
