@@ -110,8 +110,8 @@ const Payment = () => {
             className="card  text-white bg-dark"
           >
             <div className="card-body">
-              <h5 className="card-title">{product.nickname}</h5>
-              <p>$ {product.unit_amount / 100}</p>
+              <h5 className="card-title">{product.nickname}<strong>&nbsp;&nbsp;&nbsp;${product.unit_amount / 100}</strong></h5>
+              <br/>
               {isSubscriber ? (
                 <button
                   disabled={cancelSubscription}

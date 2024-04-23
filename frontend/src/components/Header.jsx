@@ -43,7 +43,7 @@ const Header = () => {
       <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
         <Container>
           <LinkContainer to="/">
-            <Navbar.Brand>Definance Passive Empire</Navbar.Brand>
+            <Navbar.Brand>DeFinance Passive Empire</Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle aria-controls="basic-navbar-nav">
             {userInfo && userInfo.name}
